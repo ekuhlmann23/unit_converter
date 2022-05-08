@@ -10,8 +10,8 @@ class UnitConversionService {
     }
 
     double conversionFactorFromBaseToTarget =
-        baseUnit.conversionFactorToCategoryBase /
-            targetUnit.conversionFactorToCategoryBase;
+        baseUnit.conversionFactorToBaseUnit /
+            targetUnit.conversionFactorToBaseUnit;
 
     return valueToConvert * conversionFactorFromBaseToTarget;
   }

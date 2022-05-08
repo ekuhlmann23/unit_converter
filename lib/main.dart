@@ -1,6 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:unit_converter/domain/dimension.dart';
+import 'package:unit_converter/domain/unit.dart';
+import 'package:unit_converter/domain/unit_conversion_service.dart';
+import 'package:unit_converter/infrastructure/firebase_unit_converter_repository.dart';
+import 'package:unit_converter/infrastructure/unit_converter_repository.dart';
+import 'package:unit_converter/presentation/unit_converter_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -24,7 +34,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: UnitConverterPage(
+        unitConversionService: UnitConversionService(),
+        unitConverterRepository:
+            FirebaseUnitConverterRepository(FirebaseFirestore.instance),
+      ),
     );
   }
 }
@@ -49,6 +63,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  Iterable<Dimension>? dimensions;
+  Iterable<Unit>? units;
+  UnitConverterRepository unitConverterRepository =
+      FirebaseUnitConverterRepository(FirebaseFirestore.instance);
 
   void _incrementCounter() {
     setState(() {
@@ -59,6 +77,24 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  void _getDimensions() async {
+    final results = await unitConverterRepository.getAllDimensions();
+    setState(() {
+      dimensions = results;
+    });
+  }
+
+  void _getUnits() async {
+    if (dimensions != null && dimensions!.isNotEmpty) {
+      final results = await unitConverterRepository
+          .getAllUnitsForDimension(dimensions!.first);
+      setState(() {
+        units = results;
+        units!.first;
+      });
+    }
   }
 
   @override
@@ -102,6 +138,22 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            const SizedBox(width: 30),
+            ElevatedButton(
+              onPressed: _getDimensions,
+              child: const Text('Get dimensions'),
+            ),
+            const SizedBox(width: 20),
+            if (dimensions != null)
+              Text('Loaded ${dimensions!.length} dimensions from Firebase.'),
+            const SizedBox(width: 20),
+            ElevatedButton(
+              onPressed: _getUnits,
+              child: const Text('Get units'),
+            ),
+            const SizedBox(width: 20),
+            if (units != null)
+              Text('Loaded ${units!.length} units from Firebase.')
           ],
         ),
       ),

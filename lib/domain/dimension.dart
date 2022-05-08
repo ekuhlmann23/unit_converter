@@ -4,6 +4,15 @@ class Dimension {
 
   Dimension(this.name, this.baseUnitName);
 
+  // Json serialization / deserialization
+  factory Dimension.fromJson(Map<String, dynamic> json) =>
+      Dimension(json['name'] as String, json['baseUnitName'] as String);
+
+  Map<String, dynamic> toJson() => {'name': name, 'baseUnitName': baseUnitName};
+
+  @override
+  String toString() => name;
+
   // Equality stuff (because Dart uses instance equality instead of value equality)
   @override
   bool operator ==(Object other) =>
