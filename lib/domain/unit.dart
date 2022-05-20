@@ -4,19 +4,22 @@ class Unit {
   final Dimension dimension;
   final double conversionFactorToBaseUnit;
   final String name;
+  final String symbol;
 
-  Unit(this.dimension, this.name, this.conversionFactorToBaseUnit);
+  Unit(this.dimension, this.name, this.symbol, this.conversionFactorToBaseUnit);
 
   // Json serialization / deserialization
   factory Unit.fromJson(Map<String, dynamic> json) => Unit(
         Dimension.fromJson(json['dimension']),
         json['name'] as String,
+        json['symbol'] as String,
         (json['conversionFactorToBaseUnit'] as num).toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
         'dimension': dimension.toJson(),
         'name': name,
+        'symbol': symbol,
         'conversionFactorToBaseUnit': conversionFactorToBaseUnit,
       };
 

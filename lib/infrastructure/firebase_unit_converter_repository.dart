@@ -26,6 +26,12 @@ class FirebaseUnitConverterRepository implements UnitConverterRepository {
   }
 
   @override
+  Future<Iterable<Unit>> getAllUnits() async {
+    final results = await _unitsCollection.get();
+    return results.docs.map((snapshot) => snapshot.data());
+  }
+
+  @override
   Future<Iterable<Unit>> getAllUnitsForDimension(Dimension dimension) async {
     final results = await _unitsCollection
         .where('dimension', isEqualTo: dimension.toJson())

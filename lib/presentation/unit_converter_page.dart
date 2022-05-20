@@ -44,8 +44,7 @@ class _UnitConverterPageState extends State<UnitConverterPage> {
       dimensions = dimensionResults;
     });
     if (dimensions.isNotEmpty) {
-      final unitResults = await widget._unitConverterRepository
-          .getAllUnitsForDimension(dimensions.first);
+      final unitResults = await widget._unitConverterRepository.getAllUnits();
       setState(() {
         units = unitResults;
       });
@@ -101,8 +100,7 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
   double? scalarInBaseUnit;
   double? scalarInTargetUnit;
 
-  Iterable<Unit> get unitsOfDimension =>
-      widget.units.where((unit) => unit.dimension == selectedDimension);
+  Iterable<Unit> unitsOfDimension = [];
 
   @override
   Widget build(BuildContext context) {
@@ -126,13 +124,17 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
             onChanged: (dimension) {
               setState(() {
                 selectedDimension = dimension;
+                filterUnits();
               });
             },
           ),
           const SizedBox(height: 30),
-          if (widget.units.isEmpty)
-            const Text('No units are available.')
-          else if (selectedDimension != null) ...[
+          if (selectedDimension == null)
+            const Text('Please select a dimension.')
+          else if (selectedDimension != null && unitsOfDimension.isEmpty)
+            Text(
+                'No units are available for dimension ${selectedDimension?.name}.')
+          else ...[
             DropdownButton<Unit>(
               value: selectedBaseUnit,
               hint: const Text('Base unit'),
@@ -171,24 +173,30 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
               },
             ),
             const SizedBox(height: 10),
-            TextField(
-              enabled: selectedBaseUnit != null && selectedTargetUnit != null,
-              decoration: const InputDecoration(labelText: 'Input'),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'\d+([\.]\d*)?')),
-              ], // Only numbers can be entered
-              onChanged: (value) {
-                setState(() {
-                  scalarInBaseUnit =
-                      value.isNotEmpty ? double.parse(value) : null;
-                  convert();
-                });
-              },
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                enabled: selectedBaseUnit != null && selectedTargetUnit != null,
+                decoration: InputDecoration(
+                  labelText: 'Input',
+                  suffix: Text(selectedBaseUnit!.symbol),
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'\d+([\.]\d*)?')),
+                ], // Only numbers can be entered
+                onChanged: (value) {
+                  setState(() {
+                    scalarInBaseUnit =
+                        value.isNotEmpty ? double.parse(value) : null;
+                    convert();
+                  });
+                },
+              ),
             ),
             const SizedBox(height: 30),
             if (scalarInTargetUnit != null)
-              Text('Result is: $scalarInTargetUnit')
+              Text('$scalarInTargetUnit ${selectedTargetUnit!.symbol}')
           ]
         ]
       ],
@@ -204,6 +212,11 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
     } else {
       scalarInTargetUnit = null;
     }
+  }
+
+  void filterUnits() {
+    unitsOfDimension =
+        widget.units.where((unit) => unit.dimension == selectedDimension);
   }
 }
 
