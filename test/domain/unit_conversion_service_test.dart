@@ -5,10 +5,10 @@ import 'package:unit_converter/domain/unit_conversion_service.dart';
 
 void main() {
   final category = Dimension('Weight', 'gram');
-  final gram = Unit(category, 'Kilogram', 1.0);
-  final kilogram = Unit(category, 'Kilogram', 1000.0);
-  final pound = Unit(category, 'Pound', 453.59237);
-  final ukTonne = Unit(category, 'UK Tonne', 1016046.9088);
+  final gram = Unit(category, 'Gram', 'g', 1.0);
+  final kilogram = Unit(category, 'Kilogram', 'kg', 1000.0);
+  final pound = Unit(category, 'Pound', 'lb', 453.59237);
+  final ukTonne = Unit(category, 'UK Tonne', 't', 1016046.9088);
 
   final unitConversionService = UnitConversionService();
 

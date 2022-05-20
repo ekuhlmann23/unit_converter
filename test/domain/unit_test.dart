@@ -30,7 +30,7 @@ void main() {
       'dimension': {'name': 'Length', 'baseUnitName': 'Meter'},
       'name': 'Meter',
       'symbol': 'm',
-      'conversionFactorToBaseUnit': 1.0,
+      'conversionFactorToDimensionBase': 1.0,
     };
     expect(unit.toJson(), expectedResult);
   });
@@ -39,7 +39,8 @@ void main() {
     final json = {
       'dimension': {'name': 'Length', 'baseUnitName': 'Meter'},
       'name': 'Meter',
-      'conversionFactorToBaseUnit': 1.0,
+      'symbol': 'm',
+      'conversionFactorToDimensionBase': 1.0,
     };
     final dimension = Dimension('Length', 'Meter');
     final expectedResult = Unit(dimension, 'Meter', 'm', 1.0);
