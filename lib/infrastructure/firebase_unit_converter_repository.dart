@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:unit_converter/domain/dimension.dart';
+import 'package:unit_converter/domain/i_unit_converter_repository.dart';
 import 'package:unit_converter/domain/unit.dart';
-import 'package:unit_converter/infrastructure/unit_converter_repository.dart';
 
-class FirebaseUnitConverterRepository implements UnitConverterRepository {
+class FirebaseUnitConverterRepository implements IUnitConverterRepository {
   final CollectionReference<Unit> _unitsCollection;
   final CollectionReference<Dimension> _dimensionsCollection;
 

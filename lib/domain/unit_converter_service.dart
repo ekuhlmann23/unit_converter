@@ -1,7 +1,7 @@
 import 'package:unit_converter/domain/domain_exception.dart';
 import 'package:unit_converter/domain/unit.dart';
 
-class UnitConversionService {
+class UnitConverterService {
   static const errorDelta = 0.0001;
 
   double convertValue(Unit baseUnit, Unit targetUnit, double valueToConvert) {

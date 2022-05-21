@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:unit_converter/application/unit_converter_use_case.dart';
 import 'package:unit_converter/domain/dimension.dart';
 import 'package:unit_converter/domain/unit.dart';
-import 'package:unit_converter/domain/unit_conversion_service.dart';
-import 'package:unit_converter/infrastructure/unit_converter_repository.dart';
 
 class UnitConverterPage extends StatefulWidget {
-  final UnitConverterRepository _unitConverterRepository;
-  final UnitConversionService _unitConversionService;
+  final UnitConverterUseCase _unitConverterUseCase;
 
-  const UnitConverterPage({
-    Key? key,
-    required UnitConverterRepository unitConverterRepository,
-    required UnitConversionService unitConversionService,
-  })  : _unitConverterRepository = unitConverterRepository,
-        _unitConversionService = unitConversionService,
+  const UnitConverterPage({required UnitConverterUseCase useCase, Key? key})
+      : _unitConverterUseCase = useCase,
         super(key: key);
 
   @override
@@ -39,12 +33,12 @@ class _UnitConverterPageState extends State<UnitConverterPage> {
 
   Future<void> loadData() async {
     final dimensionResults =
-        await widget._unitConverterRepository.getAllDimensions();
+        await widget._unitConverterUseCase.getAllDimensions();
     setState(() {
       dimensions = dimensionResults;
     });
     if (dimensions.isNotEmpty) {
-      final unitResults = await widget._unitConverterRepository.getAllUnits();
+      final unitResults = await widget._unitConverterUseCase.getAllUnits();
       setState(() {
         units = unitResults;
       });
@@ -64,7 +58,7 @@ class _UnitConverterPageState extends State<UnitConverterPage> {
           child: isLoading
               ? const _LoadingWidget()
               : _UnitConverterWidget(
-                  unitConversionService: widget._unitConversionService,
+                  useCase: widget._unitConverterUseCase,
                   dimensions: dimensions,
                   units: units,
                 ),
@@ -77,15 +71,14 @@ class _UnitConverterPageState extends State<UnitConverterPage> {
 class _UnitConverterWidget extends StatefulWidget {
   final Iterable<Dimension> dimensions;
   final Iterable<Unit> units;
+  final UnitConverterUseCase useCase;
 
-  final UnitConversionService unitConversionService;
-
-  const _UnitConverterWidget(
-      {Key? key,
-      required this.dimensions,
-      required this.units,
-      required this.unitConversionService})
-      : super(key: key);
+  const _UnitConverterWidget({
+    Key? key,
+    required this.useCase,
+    required this.dimensions,
+    required this.units,
+  }) : super(key: key);
 
   @override
   State<_UnitConverterWidget> createState() => _UnitConverterWidgetState();
@@ -124,7 +117,8 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
             onChanged: (dimension) {
               setState(() {
                 selectedDimension = dimension;
-                filterUnits();
+                unitsOfDimension = widget.useCase
+                    .filterUnitsForADimension(widget.units, selectedDimension);
               });
             },
           ),
@@ -207,16 +201,11 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
     if (selectedBaseUnit != null &&
         selectedTargetUnit != null &&
         scalarInBaseUnit != null) {
-      scalarInTargetUnit = widget.unitConversionService.convertValue(
+      scalarInTargetUnit = widget.useCase.convertValue(
           selectedBaseUnit!, selectedTargetUnit!, scalarInBaseUnit!);
     } else {
       scalarInTargetUnit = null;
     }
-  }
-
-  void filterUnits() {
-    unitsOfDimension =
-        widget.units.where((unit) => unit.dimension == selectedDimension);
   }
 }
 

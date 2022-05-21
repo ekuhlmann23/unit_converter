@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:unit_converter/domain/dimension.dart';
 import 'package:unit_converter/domain/unit.dart';
-import 'package:unit_converter/domain/unit_conversion_service.dart';
+import 'package:unit_converter/domain/unit_converter_service.dart';
 
 void main() {
   final category = Dimension('Weight', 'gram');
@@ -10,7 +10,7 @@ void main() {
   final pound = Unit(category, 'Pound', 'lb', 453.59237);
   final ukTonne = Unit(category, 'UK Tonne', 't', 1016046.9088);
 
-  final unitConversionService = UnitConversionService();
+  final unitConversionService = UnitConverterService();
 
   test('Value is not changed when converting to the same unit', () {
     const value = 3.0;
@@ -54,7 +54,7 @@ void main() {
     final actualResult = unitConversionService.convertValue(gram, pound, value);
 
     expect(
-        actualResult, closeTo(expectedResult, UnitConversionService.errorDelta),
+        actualResult, closeTo(expectedResult, UnitConverterService.errorDelta),
         reason: 'Conversion yields the correct result.');
   });
 
@@ -67,7 +67,7 @@ void main() {
     final actualResult = unitConversionService.convertValue(pound, gram, value);
 
     expect(
-        actualResult, closeTo(expectedResult, UnitConversionService.errorDelta),
+        actualResult, closeTo(expectedResult, UnitConverterService.errorDelta),
         reason: 'Conversion yields the correct result.');
   });
 
@@ -81,7 +81,7 @@ void main() {
         unitConversionService.convertValue(ukTonne, pound, value);
 
     expect(
-        actualResult, closeTo(expectedResult, UnitConversionService.errorDelta),
+        actualResult, closeTo(expectedResult, UnitConverterService.errorDelta),
         reason: 'Conversion yields the correct result.');
   });
 }
