@@ -173,7 +173,9 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
                 enabled: selectedBaseUnit != null && selectedTargetUnit != null,
                 decoration: InputDecoration(
                   labelText: 'Input',
-                  suffix: Text(selectedBaseUnit!.symbol),
+                  suffix: selectedBaseUnit != null
+                      ? Text(selectedBaseUnit!.symbol)
+                      : null,
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
