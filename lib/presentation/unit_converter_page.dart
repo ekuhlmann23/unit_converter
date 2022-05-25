@@ -119,6 +119,8 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
                 selectedDimension = dimension;
                 unitsOfDimension = widget.useCase
                     .filterUnitsForADimension(widget.units, selectedDimension);
+                selectedBaseUnit = null;
+                selectedDimension = null;
               });
             },
           ),
