@@ -120,7 +120,7 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
                 unitsOfDimension = widget.useCase
                     .filterUnitsForADimension(widget.units, selectedDimension);
                 selectedBaseUnit = null;
-                selectedDimension = null;
+                selectedTargetUnit = null;
               });
             },
           ),
