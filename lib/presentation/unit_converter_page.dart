@@ -121,7 +121,6 @@ class _UnitConverterWidgetState extends State<_UnitConverterWidget> {
                     .filterUnitsForADimension(widget.units, selectedDimension);
                 selectedBaseUnit = null;
                 selectedTargetUnit = null;
-                scalarInBaseUnit = null;
                 scalarInTargetUnit = null;
               });
             },
